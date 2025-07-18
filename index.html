@@ -6,57 +6,157 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
+    :root {
+      --border-color:#e4e4e4;
+      --bg:#f9f9f9;
+      --text:#333;
+    }
     html, body {
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, sans-serif;
-      background: #f9f9f9;
-      color: #333;
+      margin:0;
+      padding:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:var(--bg);
+      color:var(--text);
     }
     .wrapper {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      text-align: center;
+      max-width:900px;
+      margin:2rem auto;
+      padding:0 1rem;
+      text-align:center;
     }
-    /* Responsive 4:3 box (800x600 default aspect) */
-    .ggb-responsive {
-      position: relative;
-      width: 100%;
-      padding-top: 75%; /* height / width = 600 / 800 = .75 */
+
+    /* Responsive container keeping 4:3 aspect ratio */
+    .ggb-wrapper {
+      position:relative;
+      width:100%;
+      max-width:800px;          /* you can adjust this */
+      aspect-ratio:4 / 3;       /* modern browsers */
+      margin:0 auto 1.25rem;
+      border:1px solid var(--border-color);
+      border-radius:4px;
+      background:#fff;
+      overflow:hidden;
     }
-    .ggb-responsive iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 1px solid #e4e4e4;
-      border-radius: 4px;
+
+    /* Fallback for older browsers without aspect-ratio */
+    @supports not (aspect-ratio:4 / 3) {
+      .ggb-wrapper {
+        padding-top:75%;
+      }
     }
+
+    /* The div GeoGebra will inject into */
+    #ggb-element {
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+    }
+
+    a { color:#0b64c0; text-decoration:none; }
+    a:hover { text-decoration:underline; }
+
+    .actions {
+      margin-top:.75rem;
+      display:flex;
+      gap:.75rem;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .btn {
+      background:#fff;
+      border:1px solid var(--border-color);
+      border-radius:4px;
+      padding:.55rem .9rem;
+      font-size:.9rem;
+      cursor:pointer;
+      transition:.15s background;
+    }
+    .btn:hover { background:#f0f0f0; }
   </style>
+
+  <!-- Modern GeoGebra deployment script -->
+  <script src="https://www.geogebra.org/apps/deployggb.js"></script>
 </head>
 <body>
   <div class="wrapper">
-    <h1>Interactive tool</h1>
+    <h1>Interactive Tool: Beam Funicular & Reaction Forces</h1>
 
-    <div class="ggb-responsive">
-    <iframe
-      src="https://www.geogebra.org/material/iframe/id/yree35wy/width/800/height/600/smb/false/stb/false/ai/false/sri/false/rc/false"
-      width="800"
-      height="600"
-      style="border:1px solid #e4e4e4;border-radius:4px"
-      allowfullscreen
-      loading="lazy"
-      title="GeoGebra Applet">
-    </iframe>
+    <div class="ggb-wrapper ggb-scale">
+      <div id="ggb-element"></div>
     </div>
 
-    <p>If the applet doesn’t load, 
-      <a href="https://www.geogebra.org/calculator/uhepgnzy" target="_blank" rel="noopener">
-        open it on GeoGebra.org
+    <p>If the app doesn’t load (network blocked), you can
+      <a href="https://www.geogebra.org/calculator/yree35wy" target="_blank" rel="noopener">
+        open it directly on GeoGebra.org
       </a>.
     </p>
+
+    <div class="actions">
+      <button class="btn" id="resetBtn" type="button">Reset</button>
+      <button class="btn" id="downloadBtn" type="button">Download .ggb</button>
+    </div>
   </div>
+
+  <script>
+    // Keep an original snapshot so "Reset" can restore.
+    let originalBase64 = null;
+    let ggbApi = null;
+
+    const params = {
+      material_id: "yree35wy",     // Your material ID
+      appName: "classic",
+      width: 800,                  // Initial size (will scale down inside wrapper)
+      height: 600,
+      showMenuBar: false,
+      showToolBar: false,
+      showAlgebraInput: false,
+      showResetIcon: false,
+      enableRightClick: false,
+      enableShiftDragZoom: false,
+      enableLabelDrags: false,
+      useBrowserForJS: true,
+      scaleContainerClass: "ggb-scale",   // Make it auto-scale to the wrapper
+      appletOnLoad: function(api) {
+        ggbApi = api;
+        // Capture a pristine snapshot for the Reset button
+        try {
+          originalBase64 = api.getBase64();
+        } catch(e) {
+          console.warn("Could not capture initial Base64:", e);
+        }
+      }
+    };
+
+    const applet = new GGBApplet(params, true);
+    window.addEventListener('load', () => {
+      applet.inject('ggb-element');
+    });
+
+    // Reset: restore original construction (if snapshot captured)
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (ggbApi && originalBase64) {
+        ggbApi.setBase64(originalBase64);
+      }
+    });
+
+    // Download current state as .ggb
+    document.getElementById('downloadBtn').addEventListener('click', async () => {
+      if (!ggbApi) return;
+      try {
+        const b64 = ggbApi.getBase64();
+        const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+        const blob = new Blob([bytes], { type: "application/zip" });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = "beam_funicular.ggb";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      } catch(e) {
+        console.error(e);
+      }
+    });
+  </script>
 </body>
 </html>
 
