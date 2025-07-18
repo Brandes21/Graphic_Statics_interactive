@@ -1,2 +1,2 @@
 # Graphic_Statics_interactive
-Graphic statics in GeoGebra
+This repository contains Geogebra files that contain Graphic Statics models.
