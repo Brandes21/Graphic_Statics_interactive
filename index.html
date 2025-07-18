@@ -18,7 +18,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Graphic Statics - Interactive examples</title>
+  <title>Structural Interaction Applets</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="description" content="Collection of interactive GeoGebra applets for structural / graphic statics exploration." />
   <style>
@@ -31,7 +31,9 @@
     .grid { --min:260px; display:grid; gap:1.35rem; padding:1rem clamp(1rem,3vw,2.25rem) 3rem; grid-template-columns:repeat(auto-fill,minmax(var(--min),1fr)); }
     .card { position:relative; display:flex; flex-direction:column; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; text-decoration:none; color:inherit; box-shadow:var(--shadow); transition:.25s transform,.35s box-shadow,.25s border-color; }
     .card:focus-visible,.card:hover { transform:translateY(-4px); box-shadow:0 8px 22px -4px rgba(0,0,0,.12),0 4px 10px -2px rgba(0,0,0,.10); border-color:#b9c3cc; outline:none; }
-    .thumb { aspect-ratio:4/3; background:linear-gradient(135deg,#d0d9e4,#b3c1d1); display:flex; align-items:center; justify-content:center; font-weight:600; font-size:1.15rem; letter-spacing:.5px; color:#2c3e50; }
+    .thumb { aspect-ratio:4/3; background:#dde3ea; position:relative; overflow:hidden; }
+    .thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
+    .thumb span { position:absolute; left:8px; top:8px; background:rgba(0,0,0,.55); color:#fff; padding:.35rem .6rem; font-size:.65rem; letter-spacing:.5px; border-radius:6px; font-weight:600; text-transform:uppercase; }
     .thumb span { background:rgba(255,255,255,.85); padding:.4rem .75rem; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,.15); }
     .card h2 { margin:.9rem .95rem .4rem; font-size:1.05rem; letter-spacing:.4px; }
     .card p { margin:0 .95rem 1.05rem; font-size:.82rem; line-height:1.35; opacity:.85; }
@@ -44,52 +46,66 @@
 <body>
   <header>
     <h1>Graphic Statics - Interactive examples</h1>
-    <p class="lead">Select an applet below to open its dedicated page with full interactive view.</p>
+    <p class="lead">Select an applet below to open its dedicated page with full interactive view with <strong>Download</strong> option.</p>
   </header>
   <main class="grid">
     <!-- Repeat card blocks for each applet, adjust href/title/desc/material tags -->
     <a class="card" href="applet1.html">
-      
-      <h2>Simple Beam</h2>
+      <div class="thumb">
+        <img src="images/applet1.jpg" alt="Funicular & Reactions applet thumbnail" loading="lazy" width="400" height="300" />
+        <span>Applet 1</span>
+      </div>
+      <h2>Funicular & Reactions</h2>
       <div class="taglist"><span class="tag">Statics</span><span class="tag">Forces</span></div>
-      <p>Funicular and reaction forces for simple beam.</p>
+      <p>Explore a beam with adjustable loads and visualize internal forces.</p>
     </a>
     <a class="card" href="applet2.html">
-      <div class="thumb"><span>Applet 2</span></div>
+      <div class="thumb">
+        <img src="images/applet2.jpg" alt="Graphic Statics Frame thumbnail" loading="lazy" width="400" height="300" />
+        <span>Applet 2</span>
+      </div>
       <h2>Graphic Statics Frame</h2>
       <div class="taglist"><span class="tag">Frame</span><span class="tag">Equilibrium</span></div>
       <p>Force and form diagrams coupled for a 2D frame.</p>
     </a>
     <a class="card" href="applet3.html">
-      <div class="thumb"><span>Applet 3</span></div>
+      <div class="thumb">
+        <img src="images/applet3.jpg" alt="Cable / Funicular Shape thumbnail" loading="lazy" width="400" height="300" />
+        <span>Applet 3</span>
+      </div>
       <h2>Cable / Funicular Shape</h2>
       <div class="taglist"><span class="tag">Cable</span><span class="tag">Geometry</span></div>
       <p>Change point loads and see the resulting funicular polygon.</p>
     </a>
     <a class="card" href="applet4.html">
-      <div class="thumb"><span>Applet 4</span></div>
+      <div class="thumb">
+        <img src="images/applet4.jpg" alt="Truss Forces thumbnail" loading="lazy" width="400" height="300" />
+        <span>Applet 4</span>
+      </div>
       <h2>Truss Forces</h2>
       <div class="taglist"><span class="tag">Truss</span><span class="tag">Members</span></div>
       <p>Color-coded axial forces under adjustable loading.</p>
     </a>
     <a class="card" href="applet5.html">
-      <div class="thumb"><span>Applet 5</span></div>
+      <div class="thumb">
+        <img src="images/applet5.jpg" alt="Influence Line Explorer thumbnail" loading="lazy" width="400" height="300" />
+        <span>Applet 5</span>
+      </div>
       <h2>Influence Line Explorer</h2>
       <div class="taglist"><span class="tag">Influence</span><span class="tag">Beam</span></div>
       <p>Drag a unit load to generate shear or moment influence lines.</p>
     </a>
     <a class="card" href="applet6.html">
-      <div class="thumb"><span>Applet 6</span></div>
+      <div class="thumb">
+        <img src="images/applet6.jpg" alt="3D Load Path thumbnail" loading="lazy" width="400" height="300" />
+        <span>Applet 6</span>
+      </div>
       <h2>3D Load Path (Optional)</h2>
       <div class="taglist"><span class="tag">3D</span><span class="tag">Concept</span></div>
       <p>Illustrative 3D equilibrium or load transfer concept (placeholder).</p>
     </a>
   </main>
-  <footer>&copy; <span id="year"></span> Niclas Brandt. All rights reserved.</footer>
+  <footer>&copy; <span id="year"></span> Your Name. All rights reserved.</footer>
   <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
 </body>
 </html>
-
-<!-- ================= Shared CSS (optional) ================= -->
-<!-- If you prefer, place the repeated styles below in a separate file (e.g., applet.css) and link it in each applet page. -->
-
