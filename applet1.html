@@ -1,0 +1,99 @@
+<!-- ================= applet-template (copy to applet1.html, applet2.html, etc.) ================= -->
+<!-- For each page, set MATERIAL_ID and titles/descriptions. -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Applet Title Here</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Short description of this specific structural interaction applet." />
+  <style>
+    :root { --bg:#f5f7fa; --border:#d9dde2; --accent:#0b64c0; --accent-hover:#094d93; --text:#1e2227; --radius:12px; --mono:ui-monospace,Menlo,Consolas,monospace; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:var(--bg); color:var(--text); }
+    header { padding:1.1rem 1.25rem .5rem; display:flex; flex-wrap:wrap; align-items:center; gap:1rem; }
+    header h1 { flex:1 1 auto; margin:0; font-size:clamp(1.35rem,2.6vw,1.9rem); }
+    nav a { text-decoration:none; color:var(--accent); font-weight:600; font-size:.85rem; padding:.55rem .85rem; border:1px solid var(--accent); border-radius:999px; transition:.25s background,.25s color; }
+    nav a:hover,nav a:focus-visible { background:var(--accent); color:#fff; outline:none; }
+    main { max-width:1140px; margin:0 auto; padding:0 1rem 3rem; }
+    .applet-shell { position:relative; width:100%; max-width:900px; margin:0 auto 1rem; aspect-ratio:4/3; border:1px solid var(--border); border-radius:var(--radius); background:#fff; overflow:hidden; box-shadow:0 4px 10px -2px rgba(0,0,0,.08); }
+    @supports not (aspect-ratio:4/3){ .applet-shell { padding-top:75%; } }
+    #ggb-element { position:absolute; inset:0; width:100%; height:100%; }
+    .controls { display:flex; flex-wrap:wrap; gap:.6rem; margin:0 auto 1.25rem; justify-content:center; }
+    button.btn { cursor:pointer; border:1px solid var(--border); background:#fff; padding:.6rem .95rem; font-size:.8rem; border-radius:8px; font-weight:600; letter-spacing:.4px; display:inline-flex; align-items:center; gap:.4rem; transition:.25s background,.25s border-color; }
+    button.btn:hover,button.btn:focus-visible { background:#f0f4f8; border-color:#b4bcc4; outline:none; }
+    button.btn:active { transform:translateY(1px); }
+    .status { font-size:.65rem; letter-spacing:.5px; text-transform:uppercase; opacity:.7; text-align:center; margin-top:.25rem; }
+    .desc { max-width:860px; margin:.5rem auto 1.25rem; line-height:1.45; font-size:.9rem; }
+    footer { text-align:center; font-size:.7rem; opacity:.6; padding:2.5rem 1rem 3rem; }
+    code { font-family:var(--mono); background:#eef2f6; padding:.15rem .4rem; border-radius:4px; font-size:.75rem; }
+  </style>
+  <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Simple beam</h1>
+    <nav><a href="index.html">← Back to Collection</a></nav>
+  </header>
+  <main>
+    <div class="applet-shell ggb-scale"><div id="ggb-element"></div></div>
+    <div class="controls">
+      <button class="btn" id="resetBtn" type="button">Reset</button>
+      <button class="btn" id="downloadBtn" type="button">Download .ggb</button>
+    </div>
+    <div class="status" id="status">Loading…</div>
+    <div class="desc">
+      <p>Describe what the learner should do here. Explain any sliders, draggable points, or what “Reset” restores.</p>
+    </div>
+  </main>
+  <footer>&copy; <span id="year"></span> Niclas Brandt.</footer>
+  <script>
+    document.getElementById('year').textContent=new Date().getFullYear();
+
+    const MATERIAL_ID = 'MATERIAL_ID_1'; // <-- replace per page
+
+    let ggbApi = null; let originalBase64 = null; let gridVisible = false; // track for toggle
+
+    const params = {
+      material_id: "yree35wy",
+      appName: 'classic',              // or 'geometry' if you want lighter UI
+      perspective: 'G',                // graphics only
+      width: 900, height: 675,         // initial internal size (4:3) - wrapper scales
+      showMenuBar: false,
+      showToolBar: false,
+      showAlgebraInput: false,
+      showResetIcon: true,
+      showGrid: false,
+      showAxes: false,
+      enableRightClick: false,
+      enableShiftDragZoom: true,
+      enableLabelDrags: false,
+      scaleContainerClass: 'ggb-scale',
+      useBrowserForJS: true,
+      appletOnLoad: function(api){
+        ggbApi = api;
+        document.getElementById('status').textContent = 'Ready';
+        try { originalBase64 = api.getBase64(); } catch(e){}
+        // Enforce view state just in case material saved differently
+        api.setPerspective('G');
+        api.setGridVisible(1,false);
+        api.setAxesVisible(1,false,false);
+      }
+    };
+
+    const applet = new GGBApplet(params,true);
+    window.addEventListener('load',()=>applet.inject('ggb-element'));
+
+    // Reset
+    document.getElementById('resetBtn').addEventListener('click',()=>{
+      if(ggbApi && originalBase64){ ggbApi.setBase64(originalBase64); ggbApi.setGridVisible(1,false); ggbApi.setAxesVisible(1,false,false); gridVisible=false; }
+    });
+
+    // Download .ggb
+    document.getElementById('downloadBtn').addEventListener('click',()=>{
+      if(!ggbApi) return; try { const b64=ggbApi.getBase64(); const bytes=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)); const blob=new Blob([bytes],{type:'application/zip'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='Beam.ggb'; a.click(); URL.revokeObjectURL(a.href);}catch(e){console.error(e);} });
+
+
+  </script>
+</body>
+</html>
